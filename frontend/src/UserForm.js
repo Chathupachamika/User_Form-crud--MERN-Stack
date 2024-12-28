@@ -1,9 +1,26 @@
 import { Button, Grid, Input, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const UserForm = props => {
+const UserForm = ({addUser,updateuser,submitted,data,isEdit}) => {
     const [id,setId] = useState(0);
     const [name,setName]=useState('');
+    const [email,setEmail]=useState('');
+
+    useEffect(()=>{
+        if(!submitted){
+            setId(0);
+            setName('');
+            setEmail('');
+        }
+    },[submitted]);
+
+    useEffect(()=>{
+        if(data?.id!==0 && data.id!==0){
+            setId(data.id);
+            setName(data.name);
+            setEmail(data.email);
+        }
+    },[data]);
     return (
         <Grid
             container
@@ -69,6 +86,26 @@ const UserForm = props => {
                 />
             </Grid>
 
+            <Grid item xs={12} sm={6} sx={{ display: 'flex' }}>
+                <Typography component={'label'} htmlFor="id"
+                    sx={{
+                        color: '#000000',
+                        marginRight: '20px',
+                        fontSize: '16px',
+                        width: '100px',
+                        display: 'block',
+                    }}
+                >Email :</Typography>
+                <Input
+                    type="text"
+                    id="email"
+                    name="email"
+                    sx={{ width: '400px' }}
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                />
+            </Grid>
+
             <Button sx={{
                 margin: 'auto',
                 marginBottom: '20px',
@@ -80,8 +117,9 @@ const UserForm = props => {
                     opacity: '0.7',
                     backgroundColor: '#00eceff',
                 }
-            }}>
-                Add User
+            }}
+            onClick={()=>isEdit?updateuser({id,name,email}):addUser({id,name,email})}>
+                {isEdit?'Update':'Add'}
             </Button>
         </Grid>
     );
